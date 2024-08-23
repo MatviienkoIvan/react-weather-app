@@ -10,10 +10,13 @@ var Weather = React.createClass({
       isLoading: false
     };
   },
+
   handleSearch: function (location) {
     this.setState({ 
       isLoading: true, 
-      errorMessage: undefined
+      errorMessage: undefined,
+      location: undefined,
+      temp: undefined
     });
 
     weatherAPI
@@ -22,6 +25,25 @@ var Weather = React.createClass({
       .catch((err) => this.setState({ errorMessage: err.message }))
       .finally(() => this.setState({ isLoading: false }));
   },
+
+  componentDidMount: function(location) {
+    var location = this.props.location.query.location;
+    
+    if (location && location.length > 0) {
+      this.handleSearch(location);
+      window.location.hash = '#/';
+    }
+  },
+
+  componentWillReceiveProps: function(newProps) {
+    var location = newProps.location.query.location;
+    
+    if (location && location.length > 0) {
+      this.handleSearch(location);
+      window.location.hash = '#/';
+    }
+  },
+
   render: function () {
     var { errorMessage, isLoading, temp, location } = this.state;
 
